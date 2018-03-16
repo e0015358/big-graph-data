@@ -23,7 +23,7 @@ object BikeShareApp {
     // Build the initial Graph
     val graph = Graph(users, relationships, defaultUser)
     println("Total Number of Postdocs: " + graph.vertices.filter { case (id, (name, pos)) => pos == "postdoc" }.count)
-    println("Total Number of Stations: " + graph.numVertices)
+    println("Total Number of Users: " + graph.numVertices)
     sc.stop()
   }
 }
