@@ -2,28 +2,40 @@ package team4.bikeshare.project
 
 import org.apache.spark.graphx._
 import org.apache.spark.rdd.RDD
-import org.apache.spark.SparkContext
-import org.apache.spark.SparkContext._
-import org.apache.spark.SparkConf
+import org.apache.spark.sql.SparkSession
+
 
 object BikeShareApp {
   def main(args: Array[String]) {
-    val conf = new SparkConf().setAppName("BikeShare App").setMaster("local[2]").set("spark.executor.memory","1g");
-    val sc = new SparkContext(conf)
-    // Create an RDD for the vertices
-    val users: RDD[(VertexId, (String, String))] =
-      sc.parallelize(Array((3L, ("rxin", "student")), (7L, ("jgonzal", "postdoc")),
-                           (5L, ("franklin", "prof")), (2L, ("istoica", "prof"))))
-    // Create an RDD for edges
-    val relationships: RDD[Edge[String]] =
-      sc.parallelize(Array(Edge(3L, 7L, "collab"),    Edge(5L, 3L, "advisor"),
-                           Edge(2L, 5L, "colleague"), Edge(5L, 7L, "pi")))
-    // Define a default user in case there are relationship with missing user
-    val defaultUser = ("John Doe", "Missing")
+    val sparkSession = SparkSession.builder.master("local").appName("spark session example").getOrCreate()
+    val df = sparkSession.read.option("header","true").csv("src/main/resources/20180102-capitalbikeshare-tripdata.csv")
+    // df.printSchema()
+    // df.show()
+    // val start_stations = df.select("start_station_number", "Start station").distinct
+    val start_stations = df.selectExpr("cast(start_station_number as int) start_station_number", "start_station").distinct
+    val start_stations_rdd = start_stations.rdd
+    val end_stations = df.selectExpr("cast(end_station_number as int) end_station_number", "end_station").distinct
+    val end_stations_rdd = end_stations.rdd
+    val all_stations_rdd = start_stations_rdd.union(end_stations_rdd).distinct
+    // all_stations_rdd.take(10).foreach(println)
+    // println(">> Total number of stations : " + all_stations_rdd.count())
+    val trips = df.selectExpr("cast(start_station_number as int) start_station_number", "cast(end_station_number as int) end_station_number").distinct
+    val trips_rdd = trips.rdd
+    // // Create an RDD for the vertices
+    val station_vertices: RDD[(VertexId, String)] = all_stations_rdd.map(row => (row(0).asInstanceOf[Number].longValue, row(1).asInstanceOf[String]))
+    // // Create an RDD for edges
+    val station_edges: RDD[Edge[Long]] = trips_rdd.map(row => Edge(row(0).asInstanceOf[Number].longValue, row(1).asInstanceOf[Number].longValue, 1))
+    // // Define a default user in case there are relationship with missing user
+    val default_station = ("Missing Station")
     // Build the initial Graph
-    val graph = Graph(users, relationships, defaultUser)
-    println("Total Number of Postdocs: " + graph.vertices.filter { case (id, (name, pos)) => pos == "postdoc" }.count)
-    println("Total Number of Users: " + graph.numVertices)
-    sc.stop()
+    val station_graph = Graph(station_vertices, station_edges, default_station)
+    station_graph.cache()
+    println("Total Number of Stations: " + station_graph.numVertices)
+    println("Total Number of Trips: " + station_graph.numEdges)
+    // sanity check
+    println("Total Number of Trips in Original Data: " + trips_rdd.count)
+    // println("Total Number of Postdocs: " + graph.vertices.filter { case (id, (name, pos)) => pos == "postdoc" }.count)
+    // println("Total Number of Stations: " + graph.numVertices)
+    sparkSession.stop()
   }
 }
