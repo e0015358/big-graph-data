@@ -14,7 +14,7 @@ Setup instructions:
 
 To execute program:
 - Load the csv datasets from https://s3.amazonaws.com/capitalbikeshare-data/index.html into bikeshare/src/main/resources
-- Update bikeshare/src/main/scala/team4/bikeshare/project/BigBikeGraph.scala with the filename of the chosen csv dataset e.g. src/main/resources/2016Q4-capitalbikeshare-tripdata.csv
+- Update bikeshare/src/main/scala/team3/bikeshare/project/BigBikeGraph.scala with the filename of the chosen csv dataset e.g. src/main/resources/2016Q4-capitalbikeshare-tripdata.csv
 - Run sbt at command prompt
 ```
 $ cd bikeshare
