@@ -2,3 +2,5 @@
 *.log
 *.csv
 target/
+.DS_Store
+
