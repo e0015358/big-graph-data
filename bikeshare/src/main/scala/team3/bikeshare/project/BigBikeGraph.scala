@@ -8,7 +8,7 @@ import org.apache.spark.sql.SparkSession
 object BikeShareApp {
   def main(args: Array[String]) {
     val sparkSession = SparkSession.builder.master("local").appName("spark session example").getOrCreate()
-    val df = sparkSession.read.option("header","true").csv("src/main/resources/2016Q4-capitalbikeshare-tripdata.csv")
+    val df = sparkSession.read.option("header","true").csv("src/main/resources/2017-q4_trip_history_data.csv")
     var newDf = df
     for(col <- df.columns){
       newDf = newDf.withColumnRenamed(col,col.replaceAll("\\s", "_"))
