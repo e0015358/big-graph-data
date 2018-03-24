@@ -3,10 +3,13 @@ package team3.bikeshare.project
 import org.apache.spark.graphx._
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
-
+import org.apache.log4j.Logger
+import org.apache.log4j.Level
 
 object BikeShareApp_PageRank {
   def main(args: Array[String]) {
+    Logger.getLogger("org").setLevel(Level.OFF)
+    Logger.getLogger("akka").setLevel(Level.OFF)
     val sparkSession = SparkSession.builder.master("local").appName("spark session example").getOrCreate()
     val df = sparkSession.read.option("header","true").csv("src/main/resources/2017-q4_trip_history_data.csv")
     var newDf = df
