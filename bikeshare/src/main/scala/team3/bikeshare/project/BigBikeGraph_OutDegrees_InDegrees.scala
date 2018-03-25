@@ -70,7 +70,7 @@ object BigBikeGraph_OutDegrees_InDegrees {
     //   .sortBy(_._2._1, ascending=false)
     //   .take(10)
     //   .foreach(x => println(x._2._2 + " has " + x._2._1 + " out degrees."))
-    println("=====================================================")
+    println("="*90)
     station_graph
       .inDegrees
       .join(station_graph.outDegrees) // join with out Degrees
@@ -79,7 +79,7 @@ object BigBikeGraph_OutDegrees_InDegrees {
       .sortBy(_._1, ascending=false)
       .take(5)
       .foreach(x => println(x._2 + " has a in/out degree ratio of " + x._1))
-    println("=====================================================")
+    println("="*90)
     station_graph
       .inDegrees
       .join(station_graph.outDegrees) // join with out Degrees

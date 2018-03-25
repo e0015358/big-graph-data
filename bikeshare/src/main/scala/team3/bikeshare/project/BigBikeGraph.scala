@@ -18,15 +18,16 @@ object BikeShareApp {
     for(col <- df.columns){
       newDf = newDf.withColumnRenamed(col,col.replaceAll("\\s", "_"))
     }
-    // newDf.printSchema()
-    // newDf.show()
+    newDf.printSchema()
+    newDf.show()
     val start_stations = newDf.selectExpr("cast(Start_station_number as int) Start_station_number", "Start_station").distinct
+    start_stations.show()
     val start_stations_rdd = start_stations.rdd
     val end_stations = newDf.selectExpr("cast(End_station_number as int) End_station_number", "End_station").distinct
     val end_stations_rdd = end_stations.rdd
     val all_stations_rdd = start_stations_rdd.union(end_stations_rdd).distinct
-    // all_stations_rdd.take(10).foreach(println)
-    // println(">> Total number of stations : " + all_stations_rdd.count())
+    all_stations_rdd.take(10).foreach(println)
+    println(">> Total number of stations : " + all_stations_rdd.count())
     val trips = newDf.selectExpr("cast(Start_station_number as int) Start_station_number", "cast(End_station_number as int) End_station_number").distinct
     val trips_rdd = trips.rdd
     // // Create an RDD for the vertices
