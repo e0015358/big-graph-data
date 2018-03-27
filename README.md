@@ -22,3 +22,7 @@ $ sbt
 ...
 > run
 ```
+
+Install Hadoop and Flume
+
+To run flume: >> bin/flume-ng agent --name agent1 -f conf/bikeshare.conf
