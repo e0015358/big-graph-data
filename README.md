@@ -21,8 +21,12 @@ OS X setup instructions:
 
 Sample Flume config for Bikeshare is found in >> flume_config/bikeshare.conf
 
+Flume read CSV Instructions >> <https://acadgild.com/blog/loading-files-into-hdfs-using-flumes-spool-directory/>
+
 To run flume: >> bin/flume-ng agent --name agent1 -f conf/bikeshare.conf
 <br><br>
+
+To view the HDFS: >> hdfs dfs -cat /flume_sink/FlumeData.*
 
 To execute GraphX program:
 

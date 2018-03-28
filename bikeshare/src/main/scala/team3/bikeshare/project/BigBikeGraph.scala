@@ -13,7 +13,8 @@ object BikeShareApp {
     Logger.getLogger("akka").setLevel(Level.OFF)
     val sparkSession = SparkSession.builder.master("local").appName("spark session example").getOrCreate()
     sparkSession.conf.set("spark.executor.memory", "2g")
-    val df = sparkSession.read.option("header","true").csv("src/main/resources/2016Q1-capitalbikeshare-tripdata.csv")
+    // val df = sparkSession.read.option("header","true").csv("src/main/resources/2014-q1_trip_history_data.csv.COMPLETED")
+    val df = sparkSession.read.option("header","true").csv("hdfs://localhost/flume_sink/")
     var newDf = df
     for(col <- df.columns){
       newDf = newDf.withColumnRenamed(col,col.replaceAll("\\s", "_"))
