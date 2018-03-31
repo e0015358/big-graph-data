@@ -18,10 +18,10 @@ object BigBikeGraphBikeMaintainance {
     // df.printSchema()
     // df.show()
     // println("="*70)
-    // val distinctValuesDF = df.select(df("Bike number")).distinct.cache()
+    val distinctValuesDF = df.select(df("Bike number")).distinct.cache()
     // println("Total number of unique bikes in 2016 Q1 : " + distinctValuesDF.count())
-    println("Top 20 bikes that require maintainance in 2016 Q1 : ")
-    df.groupBy("Bike number").agg(count("Bike number")).withColumnRenamed("count(Bike number)", "Number of Trips").sort(desc("Number of Trips")).show()
+    println("Top 30 bikes out of " + distinctValuesDF.count() + " that require maintainance in 2016 Q1 : ")
+    df.groupBy("Bike number").agg(count("Bike number")).withColumnRenamed("count(Bike number)", "Number of Trips").sort(desc("Number of Trips")).show(30)
     sparkSession.stop()
   }
 }
