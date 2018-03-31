@@ -3,6 +3,7 @@ package team3.bikeshare.project
 import org.apache.spark.graphx._
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.functions._
 import org.apache.log4j.Logger
 import org.apache.log4j.Level
 
@@ -11,7 +12,7 @@ object BigBikeGraph_OutDegrees_InDegrees {
   def main(args: Array[String]) {
     Logger.getLogger("org").setLevel(Level.OFF)
     Logger.getLogger("akka").setLevel(Level.OFF)
-    val sparkSession = SparkSession.builder.master("local").appName("spark session example").getOrCreate()
+    val sparkSession = SparkSession.builder.master("local").appName("Bike Share Vertex Degrees").getOrCreate()
     sparkSession.conf.set("spark.executor.memory", "2g")
     val df = sparkSession.read.option("header","true").csv("src/main/resources/2016Q1-capitalbikeshare-tripdata.csv")
     var newDf = df
@@ -20,6 +21,7 @@ object BigBikeGraph_OutDegrees_InDegrees {
     }
     // newDf.printSchema()
     // newDf.show()
+    // println("="*70)
     val start_stations = newDf.selectExpr("cast(Start_station_number as int) Start_station_number", "Start_station").distinct
     val start_stations_rdd = start_stations.rdd
     val end_stations = newDf.selectExpr("cast(End_station_number as int) End_station_number", "End_station").distinct
@@ -49,15 +51,15 @@ object BigBikeGraph_OutDegrees_InDegrees {
     val maxInDegree: (VertexId, Int) = station_graph.inDegrees.reduce(max)
     println("Max In Degrees : " + maxInDegree)
     println("="*70)
-    station_graph
-        .groupEdges((edge1, edge2) => edge1 + edge2)
-        .triplets
-        .sortBy(_.attr, ascending=false)
-        .map(triplet =>
-          "There were " + triplet.attr.toString + " trips from " + triplet.srcAttr + " to " + triplet.dstAttr + ".")
-        .take(10)
-        .foreach(println)
-    println("="*70)
+    // station_graph
+    //     .groupEdges((edge1, edge2) => edge1 + edge2)
+    //     .triplets
+    //     .sortBy(_.attr, ascending=false)
+    //     .map(triplet =>
+    //       "There were " + triplet.attr.toString + " trips from " + triplet.srcAttr + " to " + triplet.dstAttr + ".")
+    //     .take(10)
+    //     .foreach(println)
+    // println("="*70)
     station_graph
         .inDegrees
         .join(station_vertices)

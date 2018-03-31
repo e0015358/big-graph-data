@@ -11,7 +11,7 @@ object BikeShareApp {
   def main(args: Array[String]) {
     Logger.getLogger("org").setLevel(Level.OFF)
     Logger.getLogger("akka").setLevel(Level.OFF)
-    val sparkSession = SparkSession.builder.master("local").appName("spark session example").getOrCreate()
+    val sparkSession = SparkSession.builder.master("local").appName(Bike Share Big Graph").getOrCreate()
     sparkSession.conf.set("spark.executor.memory", "2g")
     // val df = sparkSession.read.option("header","true").csv("src/main/resources/2014-q1_trip_history_data.csv.COMPLETED")
     val df = sparkSession.read.option("header","true").csv("hdfs://localhost/flume_sink/")

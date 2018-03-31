@@ -10,7 +10,7 @@ object BikeShareApp_PageRank {
   def main(args: Array[String]) {
     Logger.getLogger("org").setLevel(Level.OFF)
     Logger.getLogger("akka").setLevel(Level.OFF)
-    val sparkSession = SparkSession.builder.master("local").appName("spark session example").getOrCreate()
+    val sparkSession = SparkSession.builder.master("local").appName("Bike Share PageRank").getOrCreate()
     val df = sparkSession.read.option("header","true").csv("src/main/resources/2017-q4_trip_history_data.csv")
     var newDf = df
     for(col <- df.columns){
