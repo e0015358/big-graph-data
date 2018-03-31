@@ -42,52 +42,53 @@ object BigBikeGraph_OutDegrees_InDegrees {
     println("Total Number of Trips: " + station_graph.numEdges)
     // sanity check
     println("Total Number of Trips in Original Data: " + trips_rdd.count)
-
-    // val inDegrees: VertexRDD[Int] = station_graph.inDegrees
-    // println("In Degrees : " + inDegrees)
-    // val maxInDegree: (VertexId, Int) = station_graph.inDegrees.reduce(max)
-    // println("Max In Degrees : " + maxInDegree)
-
-    // station_graph
-    // .groupEdges((edge1, edge2) => edge1 + edge2)
-    // .triplets
-    // .sortBy(_.attr, ascending=false)
-    // .map(triplet =>
-    //   "There were " + triplet.attr.toString + " trips from " + triplet.srcAttr + " to " + triplet.dstAttr + ".")
-    // .take(100)
-    // .foreach(println)
-
-    // station_graph
-    //   .inDegrees
-    //   .join(station_vertices)
-    //   .sortBy(_._2._1, ascending=false)
-    //   .take(10)
-    //   .foreach(x => println(x._2._2 + " has " + x._2._1 + " in degrees."))
-    // println("=====================================================")
-    // station_graph
-    //   .outDegrees
-    //   .join(station_vertices)
-    //   .sortBy(_._2._1, ascending=false)
-    //   .take(10)
-    //   .foreach(x => println(x._2._2 + " has " + x._2._1 + " out degrees."))
-    println("="*90)
+    println("="*70)
+    val inDegrees: VertexRDD[Int] = station_graph.inDegrees
+    println("In Degrees : " + inDegrees)
+    println("="*70)
+    val maxInDegree: (VertexId, Int) = station_graph.inDegrees.reduce(max)
+    println("Max In Degrees : " + maxInDegree)
+    println("="*70)
     station_graph
-      .inDegrees
-      .join(station_graph.outDegrees) // join with out Degrees
-      .join(station_vertices) // join with our other stations
-      .map(x => (x._2._1._1.toDouble/x._2._1._2.toDouble, x._2._2)) // ratio of in to out
-      .sortBy(_._1, ascending=false)
-      .take(5)
-      .foreach(x => println(x._2 + " has a in/out degree ratio of " + x._1))
-    println("="*90)
+        .groupEdges((edge1, edge2) => edge1 + edge2)
+        .triplets
+        .sortBy(_.attr, ascending=false)
+        .map(triplet =>
+          "There were " + triplet.attr.toString + " trips from " + triplet.srcAttr + " to " + triplet.dstAttr + ".")
+        .take(10)
+        .foreach(println)
+    println("="*70)
     station_graph
-      .inDegrees
-      .join(station_graph.outDegrees) // join with out Degrees
-      .join(station_vertices) // join with our other stations
-      .map(x => (x._2._1._1.toDouble/x._2._1._2.toDouble, x._2._2)) // ratio of in to out
-      .sortBy(_._1)
-      .take(5)
-      .foreach(x => println(x._2 + " has a in/out degree ratio of " + x._1))
+        .inDegrees
+        .join(station_vertices)
+        .sortBy(_._2._1, ascending=false)
+        .take(10)
+        .foreach(x => println(x._2._2 + " has " + x._2._1 + " in degrees."))
+    println("="*70)
+    station_graph
+        .outDegrees
+        .join(station_vertices)
+        .sortBy(_._2._1, ascending=false)
+        .take(10)
+        .foreach(x => println(x._2._2 + " has " + x._2._1 + " out degrees."))
+    println("="*70)
+    station_graph
+        .inDegrees
+        .join(station_graph.outDegrees) // join with out Degrees
+        .join(station_vertices) // join with our other stations
+        .map(x => (x._2._1._1.toDouble/x._2._1._2.toDouble, x._2._2)) // ratio of in to out
+        .sortBy(_._1, ascending=false)
+        .take(5)
+        .foreach(x => println(x._2 + " has a in/out degree ratio of " + x._1))
+    println("="*70)
+    station_graph
+        .inDegrees
+        .join(station_graph.outDegrees) // join with out Degrees
+        .join(station_vertices) // join with our other stations
+        .map(x => (x._2._1._1.toDouble/x._2._1._2.toDouble, x._2._2)) // ratio of in to out
+        .sortBy(_._1)
+        .take(5)
+        .foreach(x => println(x._2 + " has a in/out degree ratio of " + x._1))
     sparkSession.stop()
   }
 
