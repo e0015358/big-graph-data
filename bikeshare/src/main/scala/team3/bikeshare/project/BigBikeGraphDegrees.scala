@@ -14,22 +14,20 @@ object BigBikeGraphOutDegreesInDegrees {
     Logger.getLogger("akka").setLevel(Level.OFF)
     val sparkSession = SparkSession.builder.master("local").appName("Bike Share Vertex Degrees").getOrCreate()
     sparkSession.conf.set("spark.executor.memory", "2g")
-    val df = sparkSession.read.option("header","true").csv("src/main/resources/2016Q1-capitalbikeshare-tripdata.csv")
-    var newDf = df
-    for(col <- df.columns){
-      newDf = newDf.withColumnRenamed(col,col.replaceAll("\\s", "_"))
-    }
+    val df = sparkSession.read.option("header","true").csv("src/main/resources/201801_fordgobike_tripdata.csv")
+    val newDf = df.sample(false, 0.05)
+    println("Processing "+ newDf.count + " datapoints")
     // newDf.printSchema()
     // newDf.show()
     // println("="*70)
-    val start_stations = newDf.selectExpr("cast(Start_station_number as int) Start_station_number", "Start_station").distinct
+    val start_stations = newDf.selectExpr("cast(start_station_id as int) start_station_id", "start_station_name", "start_station_latitude", "start_station_longitude").distinct
     val start_stations_rdd = start_stations.rdd
-    val end_stations = newDf.selectExpr("cast(End_station_number as int) End_station_number", "End_station").distinct
+    val end_stations = newDf.selectExpr("cast(end_station_id as int) end_station_id", "end_station_name", "end_station_latitude", "end_station_longitude").distinct
     val end_stations_rdd = end_stations.rdd
     val all_stations_rdd = start_stations_rdd.union(end_stations_rdd).distinct
     // all_stations_rdd.take(10).foreach(println)
     // println(">> Total number of stations : " + all_stations_rdd.count())
-    val trips = newDf.selectExpr("cast(Start_station_number as int) Start_station_number", "cast(End_station_number as int) End_station_number").distinct
+    val trips = newDf.selectExpr("cast(start_station_id as int) start_station_id", "cast(end_station_id as int) end_station_id").distinct
     val trips_rdd = trips.rdd
     // // Create an RDD for the vertices
     val station_vertices: RDD[(VertexId, String)] = all_stations_rdd.map(row => (row(0).asInstanceOf[Number].longValue, row(1).asInstanceOf[String]))

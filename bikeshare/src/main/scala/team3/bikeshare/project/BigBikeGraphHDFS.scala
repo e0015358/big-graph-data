@@ -8,20 +8,17 @@ import org.apache.log4j.Logger
 import org.apache.log4j.Level
 
 
-object BikeShareApp {
+object BikeShareAppHDFS {
   def main(args: Array[String]) {
     Logger.getLogger("org").setLevel(Level.OFF)
     Logger.getLogger("akka").setLevel(Level.OFF)
     val sparkSession = SparkSession.builder.master("local").appName("Bike Share Big Graph").getOrCreate()
     sparkSession.conf.set("spark.executor.memory", "2g")
-    // val df = sparkSession.read.option("header","true").csv("src/main/resources/2014-q1_trip_history_data.csv.COMPLETED")
     val df = sparkSession.read.option("header","true").csv("hdfs://localhost/flume_sink/")
     var newDf = df
     for(col <- df.columns){
       newDf = newDf.withColumnRenamed(col,col.replaceAll("\\s", "_"))
     }
-    newDf.printSchema()
-    newDf.show()
     val start_stations = newDf.selectExpr("cast(Start_station_number as int) Start_station_number", "Start_station").distinct
     start_stations.show()
     val start_stations_rdd = start_stations.rdd

@@ -1,7 +1,7 @@
 # big-graph-data
 **Big Graph Data Analysis in Spark**
 
-Here we attempt to use GraphX to model the BikeShare data from https://www.capitalbikeshare.com/system-data
+Here we attempt to use GraphX to model the BikeShare data from ~~https://www.capitalbikeshare.com/system-data~~ <https://www.fordgobike.com/system-data>
 <br><br>
 
 Setup instructions:
@@ -40,3 +40,8 @@ $ sbt
 ...
 > run
 ```
+
+GraphX Resources:
+- <http://www.sparktutorials.net/Analyzing+Flight+Data%3A+A+Gentle+Introduction+to+GraphX+in+Spark>
+- <https://github.com/caroljmcdonald/sparkgraphxexample>
+- <https://docs.databricks.com/spark/latest/graph-analysis/graph-analysis-graphx-tutorial.html>
