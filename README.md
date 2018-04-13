@@ -16,17 +16,29 @@ Setup instructions:
 For the purpose of consuming large amount of data we decided to use Flume to write to HDFS
 
 OS X setup instructions:
- - Install Hadoop >> <https://isaacchanghau.github.io/2017/06/27/Hadoop-Installation-on-Mac-OS-X/> or <https://macmetric.com/how-to-install-hadoop-on-mac/>
+ - Install Hadoop >> <https://macmetric.com/how-to-install-hadoop-on-mac/>
  - Install Flume >> <https://brewinstall.org/install-flume-on-mac-with-brew/>
 
-Sample Flume config for Bikeshare is found in >> flume_config/bikeshare.conf
+To start HDFS on OS X:
+ - Enable Remote Login by navigating the following path :“System Preferences” -> “Sharing”. Check “Remote Login”
+ - run "/usr/local/Cellar/hadoop/3.0.0/sbin/start-dfs.sh"
+
+
+Sample Flume config for Bikeshare is found in https://github.com/e0015358/big-graph-data/blob/master/flume_config/bikeshare.conf
+
+Place the sample config in /usr/local/Cellar/flume/1.6.0/libexec/conf/
 
 Flume read CSV Instructions >> <https://acadgild.com/blog/loading-files-into-hdfs-using-flumes-spool-directory/>
 
-To run flume: >> bin/flume-ng agent --name agent1 -f conf/bikeshare.conf
+To run flume:
+>/usr/local/Cellar/flume/1.6.0/bin/flume-ng agent --name agent1 -f /usr/local/Cellar/flume/1.6.0/libexec/conf/bikeshare.conf
 <br><br>
 
-To view the HDFS: >> hdfs dfs -cat /flume_sink/FlumeData.*
+To list files in HDFS:
+> hdfs dfs -ls /flume_sink | sort -k6,7
+
+To view the HDFS:
+> hdfs dfs -cat /flume_sink/FlumeData.*
 
 To execute GraphX program:
 

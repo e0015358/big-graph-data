@@ -11,7 +11,8 @@ object BikeShareAppPageRank {
     Logger.getLogger("org").setLevel(Level.OFF)
     Logger.getLogger("akka").setLevel(Level.OFF)
     val sparkSession = SparkSession.builder.master("local").appName("Bike Share PageRank").getOrCreate()
-    val df = sparkSession.read.option("header","true").csv("src/main/resources/201801_fordgobike_tripdata.csv")
+    val df = sparkSession.read.option("header","true").csv("hdfs://localhost/fordgobike/")
+    // val df = sparkSession.read.option("header","true").csv("src/main/resources/201801_fordgobike_tripdata.csv")
     var newDf = df.sample(false, 0.1)
     println("Processing "+ newDf.count + " datapoints")
     // var newDf = df
