@@ -40,10 +40,10 @@ object BikeShareAppPageRank {
     val station_graph = Graph(station_vertices, station_edges, default_station)
     station_graph.cache()
     val ranks = station_graph.pageRank(0.0001).vertices
-    ranks.join(station_vertices)
-      .sortBy(_._2._1, ascending=false) // sort by the rank
-      .take(10) // get the top 10
-      .foreach(x => println(x._2._2))
+    val pagerank = ranks.join(station_vertices).sortBy(_._2._1, ascending=false) // sort by the rank
+    pagerank.take(10).foreach(x => println(x._2._2 + " has a pagerank of " + (x._2._1*100).toInt))
+    val pagerank_file = "top_pagerank"
+    pagerank.coalesce(1).map(tuple => "%s,%s".format(tuple._2._2, (tuple._2._1*100).toInt)).saveAsTextFile(pagerank_file)
     sparkSession.stop()
   }
 }
