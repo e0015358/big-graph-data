@@ -57,3 +57,21 @@ GraphX Resources:
 - <http://www.sparktutorials.net/Analyzing+Flight+Data%3A+A+Gentle+Introduction+to+GraphX+in+Spark>
 - <https://github.com/caroljmcdonald/sparkgraphxexample>
 - <https://docs.databricks.com/spark/latest/graph-analysis/graph-analysis-graphx-tutorial.html>
+
+Results:
+
+PageRank measures the importance of each vertex in a graph, by determining which vertexes have the most edges with other vertexes. In our example, we can use PageRank to determine which bike stations are the most important by measuring which stations have the most connections to other stations.
+
+PageRank for 201801_fordgobike_tripdata
+Processing 94802 datapoints
+Telegraph Ave at 19th St has a pagerank of 216
+Frank H Ogawa Plaza has a pagerank of 215
+San Jose Diridon Station has a pagerank of 190
+19th Street BART Station has a pagerank of 183
+Grand Ave at Webster St has a pagerank of 183
+San Fernando St at 4th St has a pagerank of 179
+Telegraph Ave at 23rd St has a pagerank of 178
+Bay Pl at Vernon St has a pagerank of 175
+West Oakland BART Station has a pagerank of 170
+MacArthur BART Station has a pagerank of 160
+[success] Total time: 5176 s, completed 14 Apr 2018, 1:03:12 AM
