@@ -40,6 +40,9 @@ To list files in HDFS:
 To view the HDFS:
 > hdfs dfs -cat /flume_sink/FlumeData.*
 
+To delete folder in HDFS:
+> hadoop fs -rm -r /flume_sink/
+
 To execute GraphX program:
 
 ~~Load the csv datasets from https://s3.amazonaws.com/capitalbikeshare-data/index.html into bikeshare/src/main/resources~~
@@ -63,6 +66,7 @@ Results:
 PageRank measures the importance of each vertex in a graph, by determining which vertexes have the most edges with other vertexes. In our example, we can use PageRank to determine which bike stations are the most important by measuring which stations have the most connections to other stations.
 
 PageRank for 201801_fordgobike_tripdata
+```
 Processing 94802 datapoints
 Telegraph Ave at 19th St has a pagerank of 216
 Frank H Ogawa Plaza has a pagerank of 215
@@ -75,3 +79,4 @@ Bay Pl at Vernon St has a pagerank of 175
 West Oakland BART Station has a pagerank of 170
 MacArthur BART Station has a pagerank of 160
 [success] Total time: 5176 s, completed 14 Apr 2018, 1:03:12 AM
+```

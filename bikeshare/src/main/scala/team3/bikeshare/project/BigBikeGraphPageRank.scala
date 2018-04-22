@@ -11,16 +11,9 @@ object BikeShareAppPageRank {
     Logger.getLogger("org").setLevel(Level.OFF)
     Logger.getLogger("akka").setLevel(Level.OFF)
     val sparkSession = SparkSession.builder.master("local").appName("Bike Share PageRank").getOrCreate()
-    // val df = sparkSession.read.option("header","true").csv("hdfs://localhost/fordgobike/")
-    val newDf = sparkSession.read.option("header","true").csv("src/main/resources/201801_fordgobike_tripdata.csv")
-    // var newDf = df.sample(false, 0.1)
+    sparkSession.conf.set("spark.executor.memory", "5g")
+    val newDf = sparkSession.read.option("header","true").csv("hdfs://localhost/fordgobike/")
     println("Processing "+ newDf.count + " datapoints")
-    // var newDf = df
-    // for(col <- df.columns){
-    //   newDf = newDf.withColumnRenamed(col,col.replaceAll("\\s", "_"))
-    // }
-    // newDf.printSchema()
-    // newDf.show()
     val start_stations = newDf.selectExpr("cast(start_station_id as int) start_station_id", "start_station_name", "start_station_latitude", "start_station_longitude").distinct
     val start_stations_rdd = start_stations.rdd
     val end_stations = newDf.selectExpr("cast(end_station_id as int) end_station_id", "end_station_name", "end_station_latitude", "end_station_longitude").distinct

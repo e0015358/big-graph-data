@@ -5,22 +5,15 @@ import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
 import org.apache.log4j.Logger
 import org.apache.log4j.Level
-// import org.apache.spark.SparkContext
-// import org.apache.spark.SparkContext._
-// import org.apache.spark.SparkConf
-
 
 object BigBikeGraphOutBoundInBound {
   def main(args: Array[String]) {
     Logger.getLogger("org").setLevel(Level.OFF)
     Logger.getLogger("akka").setLevel(Level.OFF)
     val sparkSession = SparkSession.builder.master("local").appName("Bike Share Vertex Degrees").getOrCreate()
-    sparkSession.conf.set("spark.executor.memory", "2g")
+    sparkSession.conf.set("spark.executor.memory", "3g")
     val sc = sparkSession.sparkContext
-    // val sqlContext= new org.apache.spark.sql.SQLContext(sc)
-    // import sqlContext.implicits._
-    val newDf = sparkSession.read.option("header","true").csv("src/main/resources/201801_fordgobike_tripdata.csv")
-    // val newDf = df.sample(false, 0.05)
+    val newDf = sparkSession.read.option("header","true").csv("hdfs://localhost/fordgobike/")
     println("Processing "+ newDf.count + " datapoints")
     val start_stations = newDf.selectExpr("cast(start_station_id as int) start_station_id", "start_station_name", "start_station_latitude", "start_station_longitude").distinct
     val start_stations_rdd = start_stations.rdd
@@ -40,26 +33,27 @@ object BigBikeGraphOutBoundInBound {
     station_graph.cache()
     println("Total Number of Stations: " + station_graph.numVertices)
     println("Total Number of Trips: " + station_graph.numEdges)
-    // sanity check
+    // Sanity check
     println("Total Number of Trips in Original Data: " + trips_rdd.count)
-    println("="*70)
     // Bike stations with the most inbound traffic
     val top_inbound = station_graph
         .inDegrees
         .join(station_vertices)
         .sortBy(_._2._1, ascending=false)
+    println("Bike stations with the most inbound traffic:")
     top_inbound.take(10).foreach(x => println(x._2._2 + " has " + x._2._1 + " in degrees."))
     val top_inbound_file = "top_inbound"
-    top_inbound.coalesce(1).map(tuple => "%s,%s".format(tuple._2._2, tuple._2._1)).saveAsTextFile(top_inbound_file)
-    println("="*70)
+    // top_inbound.coalesce(1).map(tuple => "%s,%s".format(tuple._2._2, tuple._2._1)).saveAsTextFile(top_inbound_file)
+
     // Bike stations with the most outbound traffic
     val top_outbound = station_graph
         .outDegrees
         .join(station_vertices)
         .sortBy(_._2._1, ascending=false)
+    println("Bike stations with the most outbound traffic:")
     top_outbound.take(10).foreach(x => println(x._2._2 + " has " + x._2._1 + " out degrees."))
     val top_outbound_file = "top_outbound"
-    top_outbound.coalesce(1).map(tuple => "%s,%s".format(tuple._2._2, tuple._2._1)).saveAsTextFile(top_outbound_file)
+    // top_outbound.coalesce(1).map(tuple => "%s,%s".format(tuple._2._2, tuple._2._1)).saveAsTextFile(top_outbound_file)
     println("="*70)
     sparkSession.stop()
   }
